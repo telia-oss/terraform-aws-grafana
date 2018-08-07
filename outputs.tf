@@ -15,3 +15,8 @@ output "service_sg_id" {
   description = "The Amazon Resource Name (ARN) that identifies the service security group."
   value       = "${module.grafana.service_sg_id}"
 }
+
+variable "task_container_assign_public_ip" {
+  description = "Assigned public IP to the container."
+  default     = "false"
+}

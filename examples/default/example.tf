@@ -8,11 +8,15 @@ locals {
   username    = "admin"
   password    = "changeme"
 
-  auth_github_enabled               = false
-  auth_github_client_id             = "id"
-  auth_github_client_secret         = "secret"
-  auth_github_allowed_organisations = "telia-oss"
-  auth_github_allow_signup          = false
+  auth_anonymous_enabled = true
+  auth_anonymous_role    = "Admin"
+  auth_basic_enabled     = false
+  server_protocol        = "http"
+
+  users_allow_org_create = true
+
+  grafana_plugins_enabled = true
+
   task_container_port               = 3000
   rds_instance_type                 = "db.m3.medium"
   rds_instance_engine               = "postgres"
@@ -21,6 +25,8 @@ locals {
   rds_instance_username             = "root"
   rds_instance_password             = "changeme"
   desired_count                     = 1
+  assign_public_ip                  = true
+  health_check_grace_period_seconds = 6000
 
   tags = {
     terraform   = "true"
@@ -43,7 +49,7 @@ module "alb" {
 
   name_prefix = "${local.name_prefix}"
   type        = "application"
-  internal    = "true"
+  internal    = "false"
   vpc_id      = "${data.aws_vpc.main.id}"
   subnet_ids  = "${data.aws_subnet_ids.main.ids}"
 
@@ -74,23 +80,35 @@ module "grafana" {
   name_prefix = "${local.name_prefix}"
   vpc_id      = "${data.aws_vpc.main.id}"
 
-  desired_count      = "${local.desired_count}"
-  private_subnet_ids = "${data.aws_subnet_ids.main.ids}"
-  tags               = "${local.tags}"
-  alb_arn            = "${module.alb.arn}"
+  desired_count                     = "${local.desired_count}"
+  private_subnet_ids                = "${data.aws_subnet_ids.main.ids}"
+  tags                              = "${local.tags}"
+  alb_arn                           = "${module.alb.arn}"
+  task_container_assign_public_ip   = "${local.assign_public_ip}"
+  health_check_grace_period_seconds = "${local.health_check_grace_period_seconds}"
 
   task_container_environment = {
-    "GF_DATABASE_TYPE"                     = "${local.rds_instance_engine}"
-    "GF_DATABASE_USER"                     = "${local.rds_instance_username}"
-    "GF_DATABASE_PASSWORD"                 = "${local.rds_instance_password}"
-    "GF_DATABASE_HOST"                     = "${module.rds-instance.endpoint}"
-    "GF_SECURITY_ADMIN_USER"               = "${local.username}"
-    "GF_SECURITY_ADMIN_PASSWORD"           = "${local.password}"
-    "GF_AUTH_GITHUB_ENABLED"               = "${local.auth_github_enabled}"
-    "GF_AUTH_GITHUB_CLIENT_ID"             = "${local.auth_github_client_id}"
-    "GF_AUTH_GITHUB_CLIENT_SECRET"         = "${local.auth_github_client_secret}"
-    "GF_AUTH_GITHUB_ALLOWED_ORGANISATIONS" = "${local.auth_github_allowed_organisations}"
-    "GF_AUTH_GITHUB_ALLOW_SIGN_UP"         = "${local.auth_github_allow_signup}"
+    "GF_SERVER_ROOT_URL"      = "http://${module.alb.dns_name}"
+    "GF_SERVER_PROTOCOL"      = "${local.server_protocol}"
+    "GRAFANA_PLUGINS_ENABLED" = "${local.grafana_plugins_enabled}"
+
+    "GF_DATABASE_TYPE"     = "${local.rds_instance_engine}"
+    "GF_DATABASE_USER"     = "${local.rds_instance_username}"
+    "GF_DATABASE_PASSWORD" = "${local.rds_instance_password}"
+    "GF_DATABASE_HOST"     = "${module.rds-instance.endpoint}"
+
+    "GF_SECURITY_ADMIN_USER"     = "${local.username}"
+    "GF_SECURITY_ADMIN_PASSWORD" = "${local.password}"
+    "GRAFANA_PASSWD"             = "${local.password}"
+
+    "GF_AUTH_BASIC_ENABLED"      = "${local.auth_basic_enabled}"
+    "GF_AUTH_ANONYMOUS_ENABLED"  = "${local.auth_anonymous_enabled}"
+    "GF_AUTH_ANONYMOUS_ORG_ROLE" = "${local.auth_anonymous_role}"
+
+    "GF_USERS_ALLOW_SIGN_UP"    = true
+    "GF_USERS_ALLOW_ORG_CREATE" = true
+
+    "GF_DASHBOARDS_JSON_ENABLED" = true
   }
 
   task_container_environment_count = "11"
@@ -104,8 +122,8 @@ resource "aws_security_group_rule" "ingress_task" {
   security_group_id        = "${module.alb.security_group_id}"
   type                     = "ingress"
   protocol                 = "tcp"
-  from_port                = "${local.task_container_port}"
-  to_port                  = "${local.task_container_port}"
+  from_port                = "80"
+  to_port                  = "80"
   source_security_group_id = "${module.grafana.service_sg_id}"
 }
 
