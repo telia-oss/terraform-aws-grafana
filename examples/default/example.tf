@@ -127,6 +127,15 @@ resource "aws_security_group_rule" "ingress_task" {
   source_security_group_id = "${module.grafana.service_sg_id}"
 }
 
+resource "aws_security_group_rule" "grafana_rds_ingress" {
+  security_group_id        = "${module.rds-instance.security_group_id}"
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = "${module.rds-instance.port}"
+  to_port                  = "${module.rds-instance.port}"
+  source_security_group_id = "${module.grafana.service_sg_id}"
+}
+
 # ----------------------------------------
 # ALB Listener
 # ----------------------------------------
