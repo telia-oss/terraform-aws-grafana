@@ -34,7 +34,7 @@ module "vpc" {
   version = "0.2.0"
 
   name_prefix          = "${local.name_prefix}"
-  private_subnet_count = 1
+  private_subnet_count = 2
 
   tags = "${local.tags}"
 }
