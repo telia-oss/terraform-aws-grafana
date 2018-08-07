@@ -2,10 +2,6 @@
 # Resources
 # ------------------------------------------------------------------------------
 
-locals {
-  task_container_port = 3000
-}
-
 data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
@@ -15,19 +11,6 @@ data "aws_caller_identity" "current" {}
 # ----------------------------------------
 resource "aws_ecs_cluster" "cluster" {
   name = "${var.name_prefix}-ecs-cluster"
-}
-
-# ----------------------------------------
-# Security groups
-# ----------------------------------------
-
-resource "aws_security_group_rule" "ingress_task" {
-  security_group_id        = "${module.grafana.service_sg_id}"
-  type                     = "ingress"
-  protocol                 = "tcp"
-  from_port                = "${local.task_container_port}"
-  to_port                  = "${local.task_container_port}"
-  source_security_group_id = "${var.alb_sg}"
 }
 
 # ----------------------------------------
@@ -59,23 +42,4 @@ module "grafana" {
     matcher = "200"
   }
   tags = "${var.tags}"
-}
-
-# ----------------------------------------
-# Listener rule
-# ----------------------------------------
-
-resource "aws_lb_listener_rule" "grafana" {
-  listener_arn = "${var.alb_listener_arn}"
-  priority     = 100
-
-  action {
-    type             = "forward"
-    target_group_arn = "${module.grafana.target_group_arn}"
-  }
-
-  condition {
-    field  = "path-pattern"
-    values = ["/grafana*"]
-  }
 }

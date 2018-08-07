@@ -19,14 +19,6 @@ variable "alb_arn" {
   description = "Arn for the ALB for which the service should be attach to."
 }
 
-variable "alb_listener_arn" {
-  description = "Arn for the ALB listener for which the rule should be created."
-}
-
-variable "alb_sg" {
-  description = "Security group for the loadbalancer"
-}
-
 variable "task_container_image" {
   description = "Image for the task definition (repo:tag or repo@digest)."
   default     = "colincoleman/grafana-ssm"

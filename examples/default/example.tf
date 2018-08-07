@@ -12,7 +12,7 @@ locals {
   auth_github_client_id             = "id"
   auth_github_client_secret         = "secret"
   auth_github_allowed_organisations = "telia-oss"
-  auth_github_allow_signup          = true
+  auth_github_allow_signup          = false
   task_container_port               = 3000
   rds_instance_type                 = "db.m3.medium"
   rds_instance_engine               = "postgres"
@@ -29,14 +29,12 @@ locals {
   }
 }
 
-module "vpc" {
-  source  = "telia-oss/vpc/aws"
-  version = "0.2.0"
+data "aws_vpc" "main" {
+  default = true
+}
 
-  name_prefix          = "${local.name_prefix}"
-  private_subnet_count = 2
-
-  tags = "${local.tags}"
+data "aws_subnet_ids" "main" {
+  vpc_id = "${data.aws_vpc.main.id}"
 }
 
 module "alb" {
@@ -46,8 +44,8 @@ module "alb" {
   name_prefix = "${local.name_prefix}"
   type        = "application"
   internal    = "true"
-  vpc_id      = "${module.vpc.vpc_id}"
-  subnet_ids  = "${module.vpc.public_subnet_ids}"
+  vpc_id      = "${data.aws_vpc.main.id}"
+  subnet_ids  = "${data.aws_subnet_ids.main.ids}"
 
   tags {
     environment = "test"
@@ -63,8 +61,8 @@ module "rds-instance" {
   username      = "${local.rds_instance_username}"
   password      = "${local.rds_instance_password}"
   database_name = "grafana"
-  subnet_ids    = "${module.vpc.private_subnet_ids}"
-  vpc_id        = "${module.vpc.vpc_id}"
+  subnet_ids    = "${data.aws_subnet_ids.main.ids}"
+  vpc_id        = "${data.aws_vpc.main.id}"
   port          = "${local.rds_instance_port}"
   engine        = "${local.rds_instance_engine}"
   instance_type = "${local.rds_instance_type}"
@@ -74,14 +72,12 @@ module "rds-instance" {
 module "grafana" {
   source      = "../../"
   name_prefix = "${local.name_prefix}"
-  vpc_id      = "${module.vpc.vpc_id}"
+  vpc_id      = "${data.aws_vpc.main.id}"
 
   desired_count      = "${local.desired_count}"
-  private_subnet_ids = "${module.vpc.private_subnet_ids}"
+  private_subnet_ids = "${data.aws_subnet_ids.main.ids}"
   tags               = "${local.tags}"
   alb_arn            = "${module.alb.arn}"
-  alb_listener_arn   = "${module.alb.arn}"
-  alb_sg             = "${module.alb.security_group_id}"
 
   task_container_environment = {
     "GF_DATABASE_TYPE"                     = "${local.rds_instance_engine}"
@@ -98,4 +94,31 @@ module "grafana" {
   }
 
   task_container_environment_count = "11"
+}
+
+# ----------------------------------------
+# Security groups
+# ----------------------------------------
+
+resource "aws_security_group_rule" "ingress_task" {
+  security_group_id        = "${module.alb.security_group_id}"
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = "${local.task_container_port}"
+  to_port                  = "${local.task_container_port}"
+  source_security_group_id = "${module.grafana.service_sg_id}"
+}
+
+# ----------------------------------------
+# ALB Listener
+# ----------------------------------------
+resource "aws_lb_listener" "main" {
+  load_balancer_arn = "${module.alb.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = "${module.grafana.target_group_arn}"
+  }
 }
