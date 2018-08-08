@@ -21,7 +21,7 @@ variable "alb_arn" {
 
 variable "task_container_image" {
   description = "Image for the task definition (repo:tag or repo@digest)."
-  default     = "grafana/grafana"
+  default     = "grafana/grafana:latest"
 }
 
 variable "task_container_port" {
@@ -35,7 +35,7 @@ variable "task_container_protocol" {
 }
 
 variable "desired_count" {
-  description = "The dsfsfdf."
+  description = "The desired number of container instances."
   default     = 1
 }
 

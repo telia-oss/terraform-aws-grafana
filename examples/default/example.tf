@@ -1,5 +1,5 @@
 provider "aws" {
-  version = "1.20.0"
+  version = "1.30.0"
   region  = "eu-west-1"
 }
 
@@ -43,7 +43,7 @@ data "aws_subnet_ids" "main" {
 
 module "alb" {
   source  = "telia-oss/loadbalancer/aws"
-  version = "0.1.0"
+  version = "0.1.1"
 
   name_prefix = "${local.name_prefix}"
   type        = "application"
@@ -57,9 +57,9 @@ module "alb" {
   }
 }
 
-module "rds-instance" {
+module "rds_instance" {
   source  = "telia-oss/rds-instance/aws"
-  version = "0.1.1"
+  version = "0.2.0"
 
   name_prefix   = "${local.name_prefix}"
   username      = "${local.rds_instance_username}"
@@ -93,7 +93,7 @@ module "grafana" {
     "GF_DATABASE_TYPE"     = "${local.rds_instance_engine}"
     "GF_DATABASE_USER"     = "${local.rds_instance_username}"
     "GF_DATABASE_PASSWORD" = "${local.rds_instance_password}"
-    "GF_DATABASE_HOST"     = "${module.rds-instance.endpoint}"
+    "GF_DATABASE_HOST"     = "${module.rds_instance.endpoint}"
 
     "GF_SECURITY_ADMIN_USER"     = "${local.username}"
     "GF_SECURITY_ADMIN_PASSWORD" = "${local.password}"
@@ -132,7 +132,7 @@ resource "aws_lb_listener" "main" {
 
 resource "aws_security_group_rule" "lb_ingress" {
   type              = "ingress"
-  description       = "HTTP"
+  description       = "Allow HTTP from internet"
   from_port         = "${local.public_port}"
   to_port           = "${local.public_port}"
   protocol          = "tcp"
@@ -152,11 +152,11 @@ resource "aws_security_group_rule" "lb_grafana_ingress_rule" {
 }
 
 resource "aws_security_group_rule" "grafana_rds_ingress" {
-  security_group_id        = "${module.rds-instance.security_group_id}"
+  security_group_id        = "${module.rds_instance.security_group_id}"
   description              = "Allow Grafana to communicate the RDS service."
   type                     = "ingress"
   protocol                 = "tcp"
-  from_port                = "${module.rds-instance.port}"
-  to_port                  = "${module.rds-instance.port}"
+  from_port                = "${module.rds_instance.port}"
+  to_port                  = "${module.rds_instance.port}"
   source_security_group_id = "${module.grafana.service_sg_id}"
 }

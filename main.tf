@@ -18,10 +18,8 @@ resource "aws_ecs_cluster" "cluster" {
 # ----------------------------------------
 
 module "grafana" {
-  source = "github.com/telia-oss/terraform-aws-ecs-fargate"
-
-  //source  = "telia-oss/ecs-fargate/aws"
-  version = "0.1.0"
+  source  = "telia-oss/ecs-fargate/aws"
+  version = "0.1.1"
 
   name_prefix                       = "${var.name_prefix}"
   vpc_id                            = "${var.vpc_id}"
