@@ -33,6 +33,8 @@ module "grafana" {
   task_container_environment_count  = "${var.task_container_environment_count}"
   task_container_environment        = "${var.task_container_environment}"
   task_container_assign_public_ip   = "${var.task_container_assign_public_ip}"
+  task_definition_cpu               = "${var.task_definition_cpu}"
+  task_definition_memory            = "${var.task_definition_memory}"
   lb_arn                            = "${var.alb_arn}"
   private_subnet_ids                = "${var.private_subnet_ids}"
   health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
