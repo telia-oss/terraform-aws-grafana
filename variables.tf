@@ -21,7 +21,7 @@ variable "alb_arn" {
 
 variable "task_container_image" {
   description = "Image for the task definition (repo:tag or repo@digest)."
-  default     = "colincoleman/grafana-ssm"
+  default     = "grafana/grafana"
 }
 
 variable "task_container_port" {

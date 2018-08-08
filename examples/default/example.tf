@@ -8,15 +8,13 @@ locals {
   username    = "admin"
   password    = "changeme"
 
-  auth_anonymous_enabled = true
-  auth_anonymous_role    = "Admin"
-  auth_basic_enabled     = false
-  server_protocol        = "http"
-
-  users_allow_org_create = true
-
-  grafana_plugins_enabled = true
-
+  auth_anonymous_enabled            = true
+  auth_anonymous_role               = "Admin"
+  auth_basic_enabled                = false
+  server_protocol                   = "http"
+  users_allow_org_create            = true
+  grafana_plugins_enabled           = true
+  public_port                       = 80
   task_container_port               = 3000
   rds_instance_type                 = "db.m3.medium"
   rds_instance_engine               = "postgres"
@@ -88,7 +86,7 @@ module "grafana" {
   health_check_grace_period_seconds = "${local.health_check_grace_period_seconds}"
 
   task_container_environment = {
-    "GF_SERVER_ROOT_URL"      = "http://${module.alb.dns_name}"
+    "GF_SERVER_ROOT_URL"      = "${local.server_protocol}://${module.alb.dns_name}:${local.public_port}"
     "GF_SERVER_PROTOCOL"      = "${local.server_protocol}"
     "GRAFANA_PLUGINS_ENABLED" = "${local.grafana_plugins_enabled}"
 
@@ -111,29 +109,7 @@ module "grafana" {
     "GF_DASHBOARDS_JSON_ENABLED" = true
   }
 
-  task_container_environment_count = "11"
-}
-
-# ----------------------------------------
-# Security groups
-# ----------------------------------------
-
-resource "aws_security_group_rule" "ingress_task" {
-  security_group_id        = "${module.alb.security_group_id}"
-  type                     = "ingress"
-  protocol                 = "tcp"
-  from_port                = "80"
-  to_port                  = "80"
-  source_security_group_id = "${module.grafana.service_sg_id}"
-}
-
-resource "aws_security_group_rule" "grafana_rds_ingress" {
-  security_group_id        = "${module.rds-instance.security_group_id}"
-  type                     = "ingress"
-  protocol                 = "tcp"
-  from_port                = "${module.rds-instance.port}"
-  to_port                  = "${module.rds-instance.port}"
-  source_security_group_id = "${module.grafana.service_sg_id}"
+  task_container_environment_count = "16"
 }
 
 # ----------------------------------------
@@ -141,11 +117,46 @@ resource "aws_security_group_rule" "grafana_rds_ingress" {
 # ----------------------------------------
 resource "aws_lb_listener" "main" {
   load_balancer_arn = "${module.alb.arn}"
-  port              = "80"
-  protocol          = "HTTP"
+  port              = "${local.public_port}"
+  protocol          = "http"
 
   default_action {
     type             = "forward"
     target_group_arn = "${module.grafana.target_group_arn}"
   }
+}
+
+# ----------------------------------------
+# Security Group Rules
+# ----------------------------------------
+
+resource "aws_security_group_rule" "lb_ingress" {
+  type              = "ingress"
+  description       = "HTTP"
+  from_port         = "${local.public_port}"
+  to_port           = "${local.public_port}"
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = "${module.alb.security_group_id}"
+}
+
+resource "aws_security_group_rule" "lb_grafana_ingress_rule" {
+  security_group_id        = "${module.grafana.service_sg_id}"
+  description              = "Allow LB to communicate the Fargate ECS service."
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = "${local.task_container_port}"
+  to_port                  = "${local.task_container_port}"
+  source_security_group_id = "${module.alb.security_group_id}"
+}
+
+resource "aws_security_group_rule" "grafana_rds_ingress" {
+  security_group_id        = "${module.rds-instance.security_group_id}"
+  description              = "Allow Grafana to communicate the RDS service."
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = "${module.rds-instance.port}"
+  to_port                  = "${module.rds-instance.port}"
+  source_security_group_id = "${module.grafana.service_sg_id}"
 }

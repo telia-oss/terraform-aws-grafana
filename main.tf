@@ -37,13 +37,11 @@ module "grafana" {
   private_subnet_ids                = "${var.private_subnet_ids}"
   health_check_grace_period_seconds = "${var.health_check_grace_period_seconds}"
 
-  // CPU
-  // Memory
-
   health_check {
     port    = "traffic-port"
     path    = "/api/health"
     matcher = "200"
   }
+
   tags = "${var.tags}"
 }
