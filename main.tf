@@ -45,3 +45,14 @@ module "grafana" {
 
   tags = "${var.tags}"
 }
+
+# ----------------------------------------
+# AWS IAM Role Policy
+# ----------------------------------------
+
+resource "aws_iam_role_policy_attachment" "ssmtotask" {
+  policy_arn = "${aws_iam_policy.grafana-task-pol.arn}"
+  role       = "${module.grafana.task_role_name}"
+
+  # tags not supported for aws_iam_role_policy_attachment
+}
