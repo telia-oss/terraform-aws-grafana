@@ -15,6 +15,7 @@ resource "aws_iam_policy" "grafana-task-pol" {
         {
             "Effect": "Allow",
             "Action": [
+                "ssm:GetParameter",
                 "ssm:GetParameters"
             ],
             "Resource": "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.name_prefix}/*"
