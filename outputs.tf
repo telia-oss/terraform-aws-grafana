@@ -10,3 +10,8 @@ output "service_sg_id" {
   description = "The Amazon Resource Name (ARN) that identifies the service security group."
   value       = "${module.grafana.service_sg_id}"
 }
+
+output "task_role_name" {
+  description = "The name of the service role."
+  value       = "${module.grafana.task_role_name}"
+}
