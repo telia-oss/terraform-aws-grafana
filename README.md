@@ -11,7 +11,7 @@ Terraform module which creates a Grafana deployment in a Fargate ECS cluster on 
 
 ## Authors
 
-Currently maintained by [these contributors](graphs/contributors).
+Currently maintained by [these contributors](https://github.com/telia-oss/terraform-aws-grafana/graphs/contributors).
 
 ## License
 
