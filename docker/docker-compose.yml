@@ -1,0 +1,10 @@
+version: '3.3'
+
+services:
+  grafana:
+    image: teliaoss/grafana-aws-env:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/var/lib/grafana
+    restart: always
