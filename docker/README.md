@@ -9,7 +9,7 @@ Image available from:
 
 ## Background
 
-This image extends the offical grafana docker image [grafana](https://github.com/grafana/grafana-docker) with our tool for securely handling secrets in environment variables on AWS. Supports KMS, SSM Parameter store and secrets manager. Inspired by ssm-env.
+This image extends the official grafana docker image [grafana](https://github.com/grafana/grafana-docker) with our tool for securely handling secrets in environment variables on AWS. Supports KMS, SSM Parameter store and secrets manager. Inspired by ssm-env.
 
 The aws-env tool will loop through the environment and exchange any variables prefixed with sm://, ssm:// and kms:// with their secret value from Secrets manager.
 
