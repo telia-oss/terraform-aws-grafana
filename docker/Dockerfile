@@ -29,7 +29,6 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && apt-get install -qq -y \
       tzdata \
-      tzdata \ 
       openssl \
       ca-certificates && \
       apt-get autoremove -y && \
