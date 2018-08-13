@@ -97,7 +97,6 @@ post-push:
 test: ## Test
 	$(info Performs test)
 	docker run --rm -i hadolint/hadolint < Dockerfile
-	docker run -rm -
 
 docker-run:
 	docker run -d --rm -p=$(PORT):$(PORT) $(DOCKER_IMAGE):$(DOCKER_TAG)
