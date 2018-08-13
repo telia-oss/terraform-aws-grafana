@@ -35,8 +35,6 @@ RUN apt-get update && apt-get install -qq -y \
       apt-get autoremove -y && \
       rm -rf /var/lib/apt/lists/*
 
-RUN echo $AWS_ENV_VERSION
-
 RUN curl -L $AWS_ENV_URL > /usr/local/bin/aws-env \
       && chmod +x /usr/local/bin/aws-env \
       && chown -R grafana:grafana usr/local/bin/aws-env
