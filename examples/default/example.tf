@@ -13,11 +13,11 @@ locals {
 
 module "grafana" {
   source               = "../../"
-  certificate_arn      = "arn:aws:acm:eu-west-1:951215386089:certificate/094ffda3-b8cc-43ef-9e6f-b10b38d81dce"
+  certificate_arn      = "arn:aws:acm:eu-west-1:111122223333:certificate/12345678-1234-1234-1234-1234567890ab"
   name_prefix          = "grafana-test"
-  parameters_key_arn   = "arn:aws:kms:eu-west-1:951215386089:key/b483566b-a96a-4221-9f39-5f51a2123a8d"
+  parameters_key_arn   = "arn:aws:kms:eu-west-1:111122223333:key/12345678-1234-1234-1234-1234567890ab"
   private_subnet_count = "2"
-  route53_zone         = "common-services-stage.telia.io."
+  route53_zone         = "example.com."
   tags                 = "${local.tags}"
 }
 
