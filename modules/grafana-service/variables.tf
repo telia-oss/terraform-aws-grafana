@@ -31,16 +31,13 @@ variable "task_definition_memory" {
 
 variable "task_container_command" {
   description = "The command that is passed to the container."
+  type        = "list"
   default     = []
-}
-
-variable "log_retention_in_days" {
-  description = "Number of days the logs will be retained in CloudWatch."
-  default     = "30"
 }
 
 variable "task_container_environment" {
   description = "The environment variables to pass to a container."
+  type        = "map"
   default     = {}
 }
 

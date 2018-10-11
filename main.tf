@@ -50,16 +50,20 @@ resource "aws_lb_listener" "main" {
 # ----------------------------------------
 
 module "grafana-service" {
-  source             = "modules/grafana-service"
-  name_prefix        = "${var.name_prefix}"
-  vpc_id             = "${module.vpc.vpc_id}"
-  alb_arn            = "${module.lb.arn}"
-  private_subnet_ids = ["${module.vpc.private_subnet_ids}"]
-  tags               = "${var.tags}"
-  parameters_key_arn = "${var.parameters_key_arn}"
-  cluster_id         = "${aws_ecs_cluster.cluster.id}"
-  alb_dns_name       = "${module.lb.dns_name}"
-  route53_zone       = "${var.route53_zone}"
+  source                 = "modules/grafana-service"
+  name_prefix            = "${var.name_prefix}"
+  vpc_id                 = "${module.vpc.vpc_id}"
+  alb_arn                = "${module.lb.arn}"
+  private_subnet_ids     = ["${module.vpc.private_subnet_ids}"]
+  tags                   = "${var.tags}"
+  parameters_key_arn     = "${var.parameters_key_arn}"
+  cluster_id             = "${aws_ecs_cluster.cluster.id}"
+  alb_dns_name           = "${module.lb.dns_name}"
+  route53_zone           = "${var.route53_zone}"
+  task_definition_memory = "${var.task_definition_memory}"
+  task_definition_cpu    = "${var.task_definition_cpu}"
+  rds_instance_type      = "${var.rds_instance_type}"
+  rds_instance_storage   = "${var.rds_instance_storage}"
 }
 
 # ----------------------------------------

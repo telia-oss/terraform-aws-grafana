@@ -22,3 +22,23 @@ variable "tags" {
   description = "A list of tags that will be applied to resources created that support tagging"
   type        = "map"
 }
+
+variable "task_definition_cpu" {
+  description = "Amount of CPU to reserve for the task."
+  default     = "256"
+}
+
+variable "task_definition_memory" {
+  description = "The soft limit (in MiB) of memory to reserve for the container."
+  default     = "512"
+}
+
+variable "rds_instance_type" {
+  description = "The db instance type to be used for the database"
+  default     = "db.t2.small"
+}
+
+variable "rds_instance_storage" {
+  description = "The ammount of storage space to allocate to the database (GB)"
+  default     = "10"
+}
