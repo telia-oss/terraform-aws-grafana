@@ -18,27 +18,24 @@ provider "random" {
 # RDS Cluster
 # ----------------------------------------
 
-module "grafana-rds" {
-  source                    = "telia-oss/rds-instance/aws"
-  version                   = "0.6.0"
-  name_prefix               = "${var.name_prefix}"
-  username                  = "${data.aws_ssm_parameter.grafana_rds_username.value}"
-  password                  = "${data.aws_ssm_parameter.grafana_rds_password.value}"
-  database_name             = "grafana"
-  subnet_ids                = "${var.private_subnet_ids}"
-  vpc_id                    = "${var.vpc_id}"
-  port                      = 5432
-  engine                    = "postgres"
-  instance_type             = "${var.rds_instance_type}"
-  allocated_storage         = "${var.rds_instance_storage}"
-  multi_az                  = false
-  tags                      = "${var.tags}"
-  skip_final_snapshot       = "false"
-  final_snapshot_identifier = "${var.name_prefix}-final-${random_uuid.snapshot_id.result}"
-  snapshot_identifier       = "${var.snapshot_identifier}"
+module "grafana_rds" {
+  source              = "telia-oss/rds-instance/aws"
+  version             = "0.6.0"
+  name_prefix         = "${var.name_prefix}"
+  username            = "${data.aws_ssm_parameter.grafana_rds_username.value}"
+  password            = "${data.aws_ssm_parameter.grafana_rds_password.value}"
+  database_name       = "grafana"
+  subnet_ids          = "${var.private_subnet_ids}"
+  vpc_id              = "${var.vpc_id}"
+  port                = 5432
+  engine              = "postgres"
+  instance_type       = "${var.rds_instance_type}"
+  allocated_storage   = "${var.rds_instance_storage}"
+  multi_az            = false
+  tags                = "${var.tags}"
+  skip_final_snapshot = "false"
+  snapshot_identifier = "${var.snapshot_identifier}"
 }
-
-resource "random_uuid" "snapshot_id" {}
 
 # ----------------------------------------
 # Grafana ECS Fargate Service
@@ -111,11 +108,11 @@ resource "aws_iam_role_policy_attachment" "cloudwatchtotask" {
 }
 
 resource "aws_security_group_rule" "grafana_rds_ingress" {
-  security_group_id        = "${module.grafana-rds.security_group_id}"
+  security_group_id        = "${module.grafana_rds.security_group_id}"
   type                     = "ingress"
   protocol                 = "tcp"
-  from_port                = "${module.grafana-rds.port}"
-  to_port                  = "${module.grafana-rds.port}"
+  from_port                = "${module.grafana_rds.port}"
+  to_port                  = "${module.grafana_rds.port}"
   source_security_group_id = "${module.grafana-service.service_sg_id}"
 }
 
@@ -154,7 +151,7 @@ resource "aws_route53_record" "grafana" {
 resource "aws_ssm_parameter" "grafana_rds_host" {
   name      = "/${var.name_prefix}/rds-url"
   type      = "SecureString"
-  value     = "${module.grafana-rds.endpoint}"
+  value     = "${module.grafana_rds.endpoint}"
   key_id    = "${var.parameters_key_arn}"
   overwrite = true
 }
