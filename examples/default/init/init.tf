@@ -1,5 +1,5 @@
 provider "aws" {
-  version = "1.37.0"
+  version = "1.40.0"
   region  = "eu-west-1"
 }
 
@@ -11,12 +11,12 @@ locals {
   }
 }
 
-module "grafana-init" {
+module "grafana_init" {
   name_prefix = "grafana-test"
   source      = "../../../modules/init"
   tags        = "${local.tags}"
 }
 
 output "parameters_key_arn" {
-  value = "${module.grafana-init.parameters_key_arn}"
+  value = "${module.grafana_init.parameters_key_arn}"
 }

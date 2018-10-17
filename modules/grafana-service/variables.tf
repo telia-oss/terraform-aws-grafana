@@ -19,6 +19,11 @@ variable "private_subnet_ids" {
   type        = "list"
 }
 
+variable "snapshot_identifier" {
+  description = "The identifier of the snapshot to create the database from - "
+  default = ""
+}
+
 variable "task_definition_cpu" {
   description = "Amount of CPU to reserve for the task."
   default     = "256"
