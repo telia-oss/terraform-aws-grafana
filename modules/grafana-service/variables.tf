@@ -20,8 +20,8 @@ variable "private_subnet_ids" {
 }
 
 variable "snapshot_identifier" {
-  description = "The identifier of the snapshot to create the database from - "
-  default = ""
+  description = "The identifier of the snapshot to create the database from - if left empty a new db will be created"
+  default     = ""
 }
 
 variable "task_definition_cpu" {
