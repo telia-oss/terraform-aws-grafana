@@ -20,7 +20,7 @@ provider "random" {
 
 module "grafana_rds" {
   source              = "telia-oss/rds-instance/aws"
-  version             = "0.6.0"
+  version             = "0.6.1"
   name_prefix         = "${var.name_prefix}"
   username            = "${data.aws_ssm_parameter.grafana_rds_username.value}"
   password            = "${data.aws_ssm_parameter.grafana_rds_password.value}"
