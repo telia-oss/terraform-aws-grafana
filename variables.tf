@@ -1,42 +1,31 @@
-# ------------------------------------------------------------------------------
-# Variables
-# ------------------------------------------------------------------------------
+variable "certificate_arn" {
+  description = "The arn of the SSL certificate to be used"
+}
 
 variable "name_prefix" {
-  description = "A prefix used for naming resources."
+  description = "Typically the name of the application. This value is used as a prefix to the name of most resources created including the public URL"
 }
 
-variable "vpc_id" {
-  description = "The ID of the VPC that this container will run in, needed for the Target Group."
+variable "parameters_key_arn" {
+  description = "The arn of the kms key used to encrypt the application parameters stored in SSM"
 }
 
-variable "private_subnet_ids" {
-  description = "A list of private subnets inside the VPC"
-  type        = "list"
+variable "private_subnet_count" {
+  description = "The number of private subnets to be created in the VPC - typically this is set to the number of availability zones in the region selected"
 }
 
-variable "alb_arn" {
-  description = "Arn for the ALB for which the service should be attach to."
+variable "route53_zone" {
+  description = "The route 53 zone into which this is deployed"
 }
 
-variable "task_container_image" {
-  description = "Image for the task definition (repo:tag or repo@digest)."
-  default     = "grafana/grafana:latest"
+variable "snapshot_identifier" {
+  description = "The identifier of the snapshot to create the database from - if left empty a new db will be created"
+  default     = ""
 }
 
-variable "task_container_port" {
-  description = "Port that the container exposes."
-  default     = 3000
-}
-
-variable "task_container_protocol" {
-  description = "Protocol that the container exposes."
-  default     = "HTTP"
-}
-
-variable "desired_count" {
-  description = "The desired number of container instances."
-  default     = 1
+variable "tags" {
+  description = "A list of tags that will be applied to resources created that support tagging"
+  type        = "map"
 }
 
 variable "task_definition_cpu" {
@@ -49,38 +38,12 @@ variable "task_definition_memory" {
   default     = "512"
 }
 
-variable "task_container_command" {
-  description = "The command that is passed to the container."
-  default     = []
+variable "rds_instance_type" {
+  description = "The db instance type to be used for the database"
+  default     = "db.t2.small"
 }
 
-variable "log_retention_in_days" {
-  description = "Number of days the logs will be retained in CloudWatch."
-  default     = "30"
-}
-
-variable "task_container_environment" {
-  description = "The environment variables to pass to a container."
-  default     = {}
-}
-
-variable "task_container_environment_count" {
-  description = "NOTE: This exists purely to calculate count in Terraform. Should equal the length of your environment map."
-  default     = "0"
-}
-
-variable "tags" {
-  description = "A map of tags (key-value pairs) passed to resources."
-  type        = "map"
-  default     = {}
-}
-
-variable "health_check_grace_period_seconds" {
-  default     = "300"
-  description = "Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown, up to 7200. Only valid for services configured to use load balancers."
-}
-
-variable "task_container_assign_public_ip" {
-  description = "Assigned public IP to the container."
-  default     = "false"
+variable "rds_instance_storage" {
+  description = "The ammount of storage space to allocate to the database (GB)"
+  default     = "10"
 }
