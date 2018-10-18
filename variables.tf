@@ -18,6 +18,11 @@ variable "route53_zone" {
   description = "The route 53 zone into which this is deployed"
 }
 
+variable "snapshot_identifier" {
+  description = "The identifier of the snapshot to create the database from - if left empty a new db will be created"
+  default     = ""
+}
+
 variable "tags" {
   description = "A list of tags that will be applied to resources created that support tagging"
   type        = "map"

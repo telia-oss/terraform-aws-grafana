@@ -64,6 +64,7 @@ module "grafana-service" {
   task_definition_cpu    = "${var.task_definition_cpu}"
   rds_instance_type      = "${var.rds_instance_type}"
   rds_instance_storage   = "${var.rds_instance_storage}"
+  snapshot_identifier    = "${var.snapshot_identifier}"
 }
 
 # ----------------------------------------
