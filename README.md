@@ -1,7 +1,7 @@
 ## Grafana
 
 [![Build Status](https://travis-ci.com/telia-oss/terraform-aws-grafana.svg?branch=master)](https://travis-ci.com/telia-oss/terraform-aws-grafana)
-![](https://img.shields.io/maintenance/yes/2018.svg) 
+![](https://img.shields.io/maintenance/yes/2019.svg)
 
 Terraform module which creates a Grafana deployment in a Fargate ECS cluster on AWS.
 
@@ -32,8 +32,8 @@ This module assumes that the AWS account this is deployed to has both a Route53 
     - `/*<name_prefix>*/github-client-id` (obtained from github when you register oauth app)
     - `/*<name_prefix>*/github-client-secret` (obtained from github when you register oauth app)
     - `/*<name_prefix>*/github-allowed-organisations` (members from this list of github organisations can login)
-    - `/*<name_prefix>*/admin-user-password` (a name for the initial admin user)
-    - `/*<name_prefix>*/admin-user-name` (a password for the initial admin user)
+    - `/*<name_prefix>*/admin-user-password` (a name for the initial admin user, note that this value is only used on first launch)
+    - `/*<name_prefix>*/admin-user-name` (a password for the initial admin user, note that this value is only used on first launch)
 6. In the *<your_envirnoment>* folder create a terraform script that uses the main module and use the value
  recorded in step 4 for the parameters_key_arn parameter
 7. Remember to set the correct Route53 zone and web certificate ARN
