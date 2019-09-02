@@ -1,5 +1,7 @@
-variable "name_prefix" {}
+variable "name_prefix" {
+}
 
 variable "tags" {
-  type = "map"
+  type = map(string)
 }
+
