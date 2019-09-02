@@ -2,8 +2,9 @@
 # VPC
 # ----------------------------------------
 module "vpc" {
-  source               = "telia-oss/vpc/aws"
-  version              = "0.1.0"
+  source  = "telia-oss/vpc/aws"
+  version = "0.1.0"
+
   name_prefix          = var.name_prefix
   cidr_block           = "10.11.0.0/16"
   private_subnet_count = var.private_subnet_count

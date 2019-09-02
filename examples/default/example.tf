@@ -1,5 +1,5 @@
 provider "aws" {
-  version = "1.40.0"
+  version = ">= 2.17"
   region  = "eu-west-1"
 }
 
@@ -16,11 +16,12 @@ module "grafana" {
   certificate_arn      = "arn:aws:acm:eu-west-1:111122223333:certificate/12345678-1234-1234-1234-1234567890ab"
   name_prefix          = "grafana-test"
   parameters_key_arn   = "arn:aws:kms:eu-west-1:111122223333:key/12345678-1234-1234-1234-1234567890ab"
-  private_subnet_count = "2"
+  private_subnet_count = 2
   route53_zone         = "example.com."
-  tags                 = "${local.tags}"
+  tags                 = local.tags
 }
 
 output "grafana_URL" {
-  value = "${module.grafana.url}"
+  value = module.grafana.url
 }
+
