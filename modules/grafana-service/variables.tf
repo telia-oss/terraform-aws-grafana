@@ -16,7 +16,7 @@ variable "vpc_id" {
 
 variable "private_subnet_ids" {
   description = "A list of private subnets inside the VPC"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "snapshot_identifier" {
@@ -36,13 +36,13 @@ variable "task_definition_memory" {
 
 variable "task_container_command" {
   description = "The command that is passed to the container."
-  type        = "list"
+  type        = list(string)
   default     = []
 }
 
 variable "task_container_environment" {
   description = "The environment variables to pass to a container."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -53,7 +53,7 @@ variable "task_container_environment_count" {
 
 variable "tags" {
   description = "A map of tags (key-value pairs) passed to resources."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -87,3 +87,4 @@ variable "alb_dns_name" {
 variable "route53_zone" {
   description = "The name of the route53 zone that this service should be registered in"
 }
+
