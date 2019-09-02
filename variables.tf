@@ -25,7 +25,7 @@ variable "snapshot_identifier" {
 
 variable "tags" {
   description = "A list of tags that will be applied to resources created that support tagging"
-  type        = "map"
+  type        = map(string)
 }
 
 variable "task_definition_cpu" {
@@ -47,3 +47,4 @@ variable "rds_instance_storage" {
   description = "The ammount of storage space to allocate to the database (GB)"
   default     = "10"
 }
+
