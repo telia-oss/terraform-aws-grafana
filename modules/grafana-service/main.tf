@@ -49,16 +49,16 @@ module "grafana-service" {
   task_container_environment = {
     "AWS_REGION"                           = data.aws_region.current.name
     "GF_SERVER_ROOT_URL"                   = "ssm://${aws_ssm_parameter.grafana_root_url.name}"
-    "GF_DATABASE_TYPE"                     = "postgres"
-    "GF_DATABASE_USER"                     = "ssm://${data.aws_ssm_parameter.grafana_rds_username.name}"
-    "GF_DATABASE_PASSWORD"                 = "ssm://${data.aws_ssm_parameter.grafana_rds_password.name}"
     "GF_DATABASE_HOST"                     = "ssm://${aws_ssm_parameter.grafana_rds_host.name}"
-    "GF_SECURITY_ADMIN_USER"               = "ssm://${data.aws_ssm_parameter.grafana_admin_user_name.name}"
-    "GF_SECURITY_ADMIN_PASSWORD"           = "ssm://${data.aws_ssm_parameter.grafana_admin_user_password.name}"
-    "GF_AUTH_GITHUB_ENABLED"               = "ssm://${data.aws_ssm_parameter.grafana_github_auth_enabled.name}"
-    "GF_AUTH_GITHUB_CLIENT_ID"             = "ssm://${data.aws_ssm_parameter.grafana_github_client_id.name}"
-    "GF_AUTH_GITHUB_CLIENT_SECRET"         = "ssm://${data.aws_ssm_parameter.grafana_github_client_secret.name}"
-    "GF_AUTH_GITHUB_ALLOWED_ORGANISATIONS" = "ssm://${data.aws_ssm_parameter.grafana_github_allowed_organisations.name}"
+    "GF_DATABASE_TYPE"                     = "postgres"
+    "GF_DATABASE_USER"                     = "ssm:///${var.name_prefix}/rds-username"
+    "GF_DATABASE_PASSWORD"                 = "ssm:///${var.name_prefix}/rds-password"
+    "GF_SECURITY_ADMIN_USER"               = "ssm:///${var.name_prefix}/admin-user-name"
+    "GF_SECURITY_ADMIN_PASSWORD"           = "ssm:///${var.name_prefix}/admin-user-password"
+    "GF_AUTH_GITHUB_ENABLED"               = "ssm:///${var.name_prefix}/github-auth-enabled"
+    "GF_AUTH_GITHUB_CLIENT_ID"             = "ssm:///${var.name_prefix}/github-client-id"
+    "GF_AUTH_GITHUB_CLIENT_SECRET"         = "ssm:///${var.name_prefix}/github-client-secret"
+    "GF_AUTH_GITHUB_ALLOWED_ORGANISATIONS" = "ssm:///${var.name_prefix}/github-client-allowed-organisations"
     "GF_AUTH_GITHUB_ALLOW_SIGN_UP"         = "true"
   }
 
@@ -80,7 +80,6 @@ module "grafana-service" {
 # ----------------------------------------
 # AWS IAM Role Policy
 # ----------------------------------------
-
 resource "aws_iam_role_policy_attachment" "ssmtotask" {
   policy_arn = aws_iam_policy.grafana-task-pol.arn
   role       = module.grafana-service.task_role_name
@@ -113,22 +112,6 @@ resource "aws_security_group_rule" "grafana_rds_ingress" {
 # ----------------------------------------
 # SSM Paramter Configuration
 # ----------------------------------------
-data "aws_ssm_parameter" "grafana_rds_username" {
-  name = "/${var.name_prefix}/rds-username"
-}
-
-data "aws_ssm_parameter" "grafana_rds_password" {
-  name = "/${var.name_prefix}/rds-password"
-}
-
-resource "aws_ssm_parameter" "grafana_root_url" {
-  name      = "/${var.name_prefix}/base-url"
-  type      = "SecureString"
-  value     = "https://${aws_route53_record.grafana.fqdn}"
-  key_id    = var.parameters_key_arn
-  overwrite = true
-}
-
 data "aws_route53_zone" "aws_route53_zone" {
   name         = var.route53_zone
   private_zone = false
@@ -150,27 +133,10 @@ resource "aws_ssm_parameter" "grafana_rds_host" {
   overwrite = true
 }
 
-data "aws_ssm_parameter" "grafana_admin_user_name" {
-  name = "/${var.name_prefix}/admin-user-name"
+resource "aws_ssm_parameter" "grafana_root_url" {
+  name      = "/${var.name_prefix}/base-url"
+  type      = "SecureString"
+  value     = "https://${aws_route53_record.grafana.fqdn}"
+  key_id    = var.parameters_key_arn
+  overwrite = true
 }
-
-data "aws_ssm_parameter" "grafana_admin_user_password" {
-  name = "/${var.name_prefix}/admin-user-password"
-}
-
-data "aws_ssm_parameter" "grafana_github_auth_enabled" {
-  name = "/${var.name_prefix}/github-auth-enabled"
-}
-
-data "aws_ssm_parameter" "grafana_github_client_id" {
-  name = "/${var.name_prefix}/github-client-id"
-}
-
-data "aws_ssm_parameter" "grafana_github_client_secret" {
-  name = "/${var.name_prefix}/github-client-secret"
-}
-
-data "aws_ssm_parameter" "grafana_github_allowed_organisations" {
-  name = "/${var.name_prefix}/github-allowed-organisations"
-}
-
