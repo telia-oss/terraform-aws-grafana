@@ -8,6 +8,14 @@ data "aws_caller_identity" "current" {}
 # ----------------------------------------
 # RDS Cluster
 # ----------------------------------------
+data "aws_ssm_parameter" "grafana_rds_username" {
+  name = "/${var.name_prefix}/rds-username"
+}
+
+data "aws_ssm_parameter" "grafana_rds_password" {
+  name = "/${var.name_prefix}/rds-password"
+}
+
 module "grafana_rds" {
   source  = "telia-oss/rds-instance/aws"
   version = "3.0.0"
@@ -51,8 +59,8 @@ module "grafana-service" {
     "GF_SERVER_ROOT_URL"                   = "ssm://${aws_ssm_parameter.grafana_root_url.name}"
     "GF_DATABASE_HOST"                     = "ssm://${aws_ssm_parameter.grafana_rds_host.name}"
     "GF_DATABASE_TYPE"                     = "postgres"
-    "GF_DATABASE_USER"                     = "ssm:///${var.name_prefix}/rds-username"
-    "GF_DATABASE_PASSWORD"                 = "ssm:///${var.name_prefix}/rds-password"
+    "GF_DATABASE_USER"                     = "ssm://${data.aws_ssm_parameter.grafana_rds_username.name}"
+    "GF_DATABASE_PASSWORD"                 = "ssm://${data.aws_ssm_parameter.grafana_rds_password.name}"
     "GF_SECURITY_ADMIN_USER"               = "ssm:///${var.name_prefix}/admin-user-name"
     "GF_SECURITY_ADMIN_PASSWORD"           = "ssm:///${var.name_prefix}/admin-user-password"
     "GF_AUTH_GITHUB_ENABLED"               = "ssm:///${var.name_prefix}/github-auth-enabled"
