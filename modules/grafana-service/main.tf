@@ -35,15 +35,14 @@ module "grafana_rds" {
 
 module "grafana-service" {
   source  = "telia-oss/ecs-fargate/aws"
-  version = "3.0.0"
+  version = "3.1.0"
 
-  name_prefix                      = var.name_prefix
-  vpc_id                           = var.vpc_id
-  cluster_id                       = var.cluster_id
-  task_container_image             = "teliaoss/grafana-aws-env:5.4.3"
-  task_container_port              = 3000
-  task_container_protocol          = "HTTP"
-  task_container_environment_count = 13
+  name_prefix             = var.name_prefix
+  vpc_id                  = var.vpc_id
+  cluster_id              = var.cluster_id
+  task_container_image    = "teliaoss/grafana-aws-env:5.4.3"
+  task_container_port     = 3000
+  task_container_protocol = "HTTP"
 
   task_container_environment = {
     "AWS_REGION"                           = data.aws_region.current.name
