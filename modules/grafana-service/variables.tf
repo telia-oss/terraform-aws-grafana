@@ -40,24 +40,6 @@ variable "task_definition_memory" {
   default     = 512
 }
 
-variable "task_container_command" {
-  description = "The command that is passed to the container."
-  type        = list(string)
-  default     = []
-}
-
-variable "task_container_environment" {
-  description = "The environment variables to pass to a container."
-  type        = map(string)
-  default     = {}
-}
-
-variable "task_container_environment_count" {
-  description = "NOTE: This exists purely to calculate count in Terraform. Should equal the length of your environment map."
-  type        = number
-  default     = 0
-}
-
 variable "tags" {
   description = "A map of tags (key-value pairs) passed to resources."
   type        = map(string)
