@@ -39,10 +39,6 @@ module "grafana_rds" {
 # ----------------------------------------
 # Grafana ECS Fargate Service
 # ----------------------------------------
-# Note: The provider cannot be removed without having a "migration release" since it was included in the first place.
-# Attempts to do so will produce the following error: "Error: Provider configuration not present"
-provider "null" {}
-
 module "grafana-service" {
   source  = "telia-oss/ecs-fargate/aws"
   version = "3.1.0"
