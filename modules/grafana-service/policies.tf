@@ -23,6 +23,7 @@ resource "aws_iam_policy" "grafana-task-pol" {
     ]
 }
 EOF
+
 }
 
 resource "aws_iam_policy" "kmsfortaskpol" {
@@ -42,6 +43,7 @@ resource "aws_iam_policy" "kmsfortaskpol" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_policy" "stsfortaskpol" {
@@ -59,4 +61,6 @@ resource "aws_iam_policy" "stsfortaskpol" {
     ]
 }
 EOF
+
 }
+
