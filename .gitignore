@@ -3,7 +3,8 @@
 **/*.tfstate*
 crash.log
 
-# InteliJ IDE
+# IntelliJ IDE
 .idea/
-.vs/
-.vscode/
+
+# Taskfile
+.task/
