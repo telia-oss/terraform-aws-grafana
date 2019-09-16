@@ -13,15 +13,7 @@ tasks:
   test:
     desc: Run tests.
     cmds:
-    - task: test-go
     - task: test-terraform
-
-  test-go:
-    desc: Run tests for all Go code.
-    silent: true
-    cmds:
-    - gofmt -s -l -w .
-    - go vet -v ./...
 
   test-terraform:
     desc: Run tests for all terraform directories.
@@ -60,10 +52,3 @@ tasks:
 
         cd $CWD
       done
-
-  e2e:
-    desc: Run the end 2 end test suite.
-    silent: true
-    cmds:
-    - go test -v ./... -timeout=1h
-    
