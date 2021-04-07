@@ -5,8 +5,8 @@ module "vpc" {
   source  = "telia-oss/vpc/aws"
   version = "4.1.0"
 
-  name_prefix = var.name_prefix
-  cidr_block  = "10.11.0.0/16"
+  name_prefix          = var.name_prefix
+  cidr_block           = "10.11.0.0/16"
   enable_dns_hostnames = true
   tags                 = var.tags
 }

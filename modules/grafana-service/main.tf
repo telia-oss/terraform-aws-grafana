@@ -18,7 +18,7 @@ data "aws_ssm_parameter" "grafana_rds_password" {
 
 module "grafana_rds" {
   source  = "telia-oss/rds-instance/aws"
-  version = "3.2.0"
+  version = "4.0.0"
 
   name_prefix         = var.name_prefix
   username            = data.aws_ssm_parameter.grafana_rds_username.value
@@ -41,7 +41,7 @@ module "grafana_rds" {
 # ----------------------------------------
 module "grafana-service" {
   source  = "telia-oss/ecs-fargate/aws"
-  version = "3.5.2"
+  version = "4.0.0"
 
   name_prefix             = var.name_prefix
   vpc_id                  = var.vpc_id
