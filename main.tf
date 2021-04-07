@@ -7,7 +7,6 @@ module "vpc" {
 
   name_prefix = var.name_prefix
   cidr_block  = "10.11.0.0/16"
-  #private_subnet_count = var.private_subnet_count
   enable_dns_hostnames = true
   tags                 = var.tags
 }
