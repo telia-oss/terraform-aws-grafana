@@ -3,11 +3,10 @@
 # ----------------------------------------
 module "vpc" {
   source  = "telia-oss/vpc/aws"
-  version = "0.1.0"
+  version = "4.1.0"
 
   name_prefix          = var.name_prefix
   cidr_block           = "10.11.0.0/16"
-  private_subnet_count = var.private_subnet_count
   enable_dns_hostnames = true
   tags                 = var.tags
 }
@@ -24,7 +23,7 @@ resource "aws_ecs_cluster" "cluster" {
 # ----------------------------------------
 module "lb" {
   source  = "telia-oss/loadbalancer/aws"
-  version = "3.0.0"
+  version = "4.0.0"
 
   name_prefix = var.name_prefix
   type        = "application"
