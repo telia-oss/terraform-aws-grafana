@@ -1,6 +1,5 @@
 provider "aws" {
-  version = ">= 2.17"
-  region  = "eu-west-1"
+  region = "eu-west-1"
 }
 
 locals {
@@ -25,7 +24,7 @@ data "aws_subnet_ids" "main" {
 
 module "alb" {
   source  = "telia-oss/loadbalancer/aws"
-  version = "3.0.0"
+  version = "4.0.0"
 
   name_prefix = local.name_prefix
   type        = "application"

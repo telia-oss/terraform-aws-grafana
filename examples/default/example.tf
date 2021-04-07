@@ -1,6 +1,5 @@
 provider "aws" {
-  version = ">= 2.17"
-  region  = "eu-west-1"
+  region = "eu-west-1"
 }
 
 locals {
@@ -17,7 +16,7 @@ module "grafana" {
   name_prefix          = "grafana-test"
   parameters_key_arn   = "arn:aws:kms:eu-west-1:111122223333:key/12345678-1234-1234-1234-1234567890ab"
   private_subnet_count = 2
-  route53_zone         = "example.com."
+  route53_zone         = "example.com"
   tags                 = local.tags
 }
 

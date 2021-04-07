@@ -1,6 +1,5 @@
 provider "aws" {
-  version = ">= 2.17"
-  region  = "eu-west-1"
+  region = "eu-west-1"
 }
 
 locals {
@@ -14,9 +13,9 @@ locals {
 module "grafana_init" {
   name_prefix = "grafana-test"
   source      = "../../../modules/init"
-  tags        = "${local.tags}"
+  tags        = local.tags
 }
 
 output "parameters_key_arn" {
-  value = "${module.grafana_init.parameters_key_arn}"
+  value = module.grafana_init.parameters_key_arn
 }
