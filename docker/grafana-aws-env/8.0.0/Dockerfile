@@ -5,7 +5,7 @@ RUN curl -L https://github.com/telia-oss/aws-env/releases/download/v1.1.0/aws-en
       chmod +x /usr/local/bin/aws-env
 
 
-COPY ./entrypoint.sh ./
+COPY ./docker/grafana-aws-env/8.0.0/entrypoint.sh ./
 USER grafana
 
 ENTRYPOINT ["./entrypoint.sh"]
