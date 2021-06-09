@@ -6,4 +6,5 @@ RUN curl -L https://github.com/telia-oss/aws-env/releases/download/v1.1.0/aws-en
 
 COPY entrypoint.sh ./
 USER grafana
+
 ENTRYPOINT ["./entrypoint.sh"]
