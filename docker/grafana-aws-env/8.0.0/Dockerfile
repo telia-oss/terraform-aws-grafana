@@ -4,6 +4,9 @@ RUN curl -L https://github.com/telia-oss/aws-env/releases/download/v1.1.0/aws-en
       echo b309067603e611c3d18c5114f86da89e  /usr/local/bin/aws-env | md5sum -c && \
       chmod +x /usr/local/bin/aws-env
 
+RUN pwd \
+    ls
+
 COPY entrypoint.sh ./
 USER grafana
 
