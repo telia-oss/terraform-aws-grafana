@@ -8,4 +8,3 @@ RUN  apk -U upgrade && apk add curl && \
 COPY ./docker/grafana-aws-env/7.5.3/entrypoint.sh ./
 USER grafana
 ENTRYPOINT ["./entrypoint.sh"]
-

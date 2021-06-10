@@ -17,3 +17,4 @@ jobs:
       run: curl -sL https://taskfile.dev/install.sh | sh
     - name: Run tests
       run: ./bin/task test
+      
